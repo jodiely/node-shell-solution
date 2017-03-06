@@ -1,17 +1,7 @@
 var directory = require('./commands.js')
 var fs = require('fs');
 
-// Output a prompt
 process.stdout.write('prompt > ');
-
-// The stdin 'data' event fires after a user types in a line
-// process.stdin.on('data', function(data) {
-//     var cmd = data.toString().trim(); // remove the newline
-
-//     process.stdout.write('You typed: ' + cmd);
-//     process.stdout.write('\nprompt > ');
-
-// });
 
 process.stdin.on('data', function(data) {
     var cmdArray = data.toString().trim().split(' ');
@@ -29,6 +19,16 @@ process.stdin.on('data', function(data) {
         directory.echo(files);
     } else if (cmd === "cat") {
         directory.cat(files.toString())
+    } else if (cmd === "head") {
+        directory.head(files.toString())
+    } else if (cmd === "tail") {
+        directory.tail(files.toString())
+    } else if (cmd === "sort") {
+        directory.sort(files.toString())
+    } else if (cmd === "wc") {
+        directory.wc(files.toString())
+    } else if (cmd === "uniq") {
+        directory.uniq(files.toString())
     } else {
         process.stdout.write('You typed: ' + cmdArray.toString());
         process.stdout.write('\nprompt > ');
