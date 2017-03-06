@@ -1,11 +1,15 @@
 var fs = require('fs');
 var request = require('request');
 
-function pwd(file, done) {
+function pwd(stdin, file, done) {
     done(process.cwd());
 }
 
-function ls(file, done) {
+function date(stdin, file, done){
+    process.stdout.write(Date());
+}
+
+function ls(stdin, file, done) {
     fs.readdir('.', function(err, files) {
         if (err) throw err;
         var output = "";
@@ -16,23 +20,44 @@ function ls(file, done) {
     });
 }
 
-function echo(file, done) {
-    var echoString = "";
-    for (var i = 0; i < file.length; i++) {
-        echoString += file[i] + " ";
-    }
-    done(echoString.trim());
+function echo(stdin, file, done) {
+    const output = args
+    .split(' ')
+    .map(function (arg){
+        return (arg[0] === '$') ? process.en[arg.slice(1)] : arg;
+    })
+    .join(' ')
+    //done(output)
+
+    // var echoString = "";
+    // for (var i = 0; i < file.length; i++) {
+    //     echoString += file[i] + " ";
+    // }
+    // done(echoString.trim());
 }
 
-function cat(file, done) {
+function cat(stdin, files, done) {
+    if(stdin){
+        file = stdin;
+    } else {
+        file = files[0];
+    };
+
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         done(data);
     });
 }
 
-function head(file, done) {
+function head(stdin, files, done) {
+    if(stdin){
+        file = stdin;
+    } else {
+        file = files[0];
+    };
+
     var output = "";
+    
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         data = data.split('\n');
@@ -43,7 +68,7 @@ function head(file, done) {
     });
 }
 
-function tail(file, done) {
+function tail(stdin, file, done) {
     var output = "";
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
@@ -55,7 +80,7 @@ function tail(file, done) {
     });
 }
 
-function sort(file, done) {
+function sort(stdin, file, done) {
     var output = "";
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
@@ -67,7 +92,7 @@ function sort(file, done) {
     });
 }
 
-function wc(file, done) {
+function wc(stdin, file, done) {
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         data = data.split('\n');
@@ -75,7 +100,7 @@ function wc(file, done) {
     });
 }
 
-function uniq(file, done) {
+function uniq(stdin, file, done) {
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         data = data.split('\n').sort();
@@ -93,7 +118,7 @@ function uniq(file, done) {
     });
 }
 
-function curl(file, done) {
+function curl(stdin, file, done) {
     request(file, function(error, response, body) {
         done(body);
     });
@@ -101,4 +126,4 @@ function curl(file, done) {
 
 
 
-module.exports = { pwd, ls, echo, cat, head, tail, sort, wc, uniq, curl }
+module.exports = { pwd, date, ls, echo, cat, head, tail, sort, wc, uniq, curl }
