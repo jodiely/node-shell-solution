@@ -12,25 +12,32 @@ process.stdin.on('data', function(data) {
         process.stdout.write(date.toString());
         process.stdout.write('\nprompt > ');
     } else if (cmd === "pwd") {
-        directory.pwd();
+        directory.pwd(files, done);
     } else if (cmd === "ls") {
-        directory.ls();
+        directory.ls(files, done);
     } else if (cmd === "echo") {
-        directory.echo(files);
+        directory.echo(files, done);
     } else if (cmd === "cat") {
-        directory.cat(files.toString())
+        directory.cat(files.toString(), done)
     } else if (cmd === "head") {
-        directory.head(files.toString())
+        directory.head(files.toString(), done)
     } else if (cmd === "tail") {
-        directory.tail(files.toString())
+        directory.tail(files.toString(), done)
     } else if (cmd === "sort") {
-        directory.sort(files.toString())
+        directory.sort(files.toString(), done)
     } else if (cmd === "wc") {
-        directory.wc(files.toString())
+        directory.wc(files.toString(), done)
     } else if (cmd === "uniq") {
-        directory.uniq(files.toString())
+        directory.uniq(files.toString(), done)
+    } else if (cmd === "curl") {
+        directory.curl(files.toString(), done)
     } else {
         process.stdout.write('You typed: ' + cmdArray.toString());
         process.stdout.write('\nprompt > ');
     }
 })
+
+var done = function(output) {
+    process.stdout.write(output);
+    process.stdout.write("\nprompt > ");
+}

@@ -1,108 +1,104 @@
 var fs = require('fs');
+var request = require('request');
 
-function pwd() {
-    process.stdout.write(process.cwd());
-    process.stdout.write("\nprompt > ");
+function pwd(file, done) {
+    done(process.cwd());
 }
 
-function ls() {
+function ls(file, done) {
     fs.readdir('.', function(err, files) {
         if (err) throw err;
+        var output = "";
         files.forEach(function(file) {
-            process.stdout.write(file.toString() + "\n");
+            output += file.toString() + "\n";
         })
-        process.stdout.write("prompt > ");
+        done(output);
     });
 }
 
-function echo(cmdArray) {
+function echo(file, done) {
     var echoString = "";
-    for (var i = 0; i < cmdArray.length; i++) {
-        echoString += cmdArray[i] + " ";
+    for (var i = 0; i < file.length; i++) {
+        echoString += file[i] + " ";
     }
-    process.stdout.write(echoString.trim());
-    process.stdout.write("\nprompt > ");
+    done(echoString.trim());
 }
 
-function cat(file) {
+function cat(file, done) {
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
-        console.log(data);
+        done(data);
     });
-    setTimeout(function() {
-        process.stdout.write("\nprompt > ");
-    }, 10);
 }
 
-function head(file){
+function head(file, done) {
+    var output = "";
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         data = data.split('\n');
-        for (var i = 0; i < 5; i++){
-            console.log(data[i]);
+        for (var i = 0; i < 5; i++) {
+            output += data[i] + "\n";
         }
+        done(output);
     });
-    setTimeout(function() {
-        process.stdout.write("\nprompt > ");
-    }, 10);  
 }
 
-function tail(file){
+function tail(file, done) {
+    var output = "";
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         data = data.split('\n');
-        for (var i = data.length-5; i < data.length; i++){
-            console.log(data[i]);
+        for (var i = data.length - 5; i < data.length; i++) {
+            output += data[i] + "\n";
         }
+        done(output);
     });
-    setTimeout(function() {
-        process.stdout.write("\nprompt > ");
-    }, 10);
 }
 
-function sort(file){
+function sort(file, done) {
+    var output = "";
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         data = data.split('\n').sort();
-        for (var i = 0; i < data.length; i++){
-            console.log(data[i]);
+        for (var i = 0; i < data.length; i++) {
+            output += data[i] + "\n";
         }
+        done(output);
     });
-    setTimeout(function() {
-        process.stdout.write("\nprompt > ");
-    }, 10);
 }
 
-function wc(file){
+function wc(file, done) {
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         data = data.split('\n');
-            console.log(data.length);
+        done(data.length.toString());
     });
-
-    setTimeout(function() {
-        process.stdout.write("\nprompt > ");
-    }, 10);
 }
 
-function uniq(file){
+function uniq(file, done) {
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) throw err;
         data = data.split('\n').sort();
         var newData = [];
-        for (var i = 0; i < data.length; i++){
-            if (newData.indexOf(data[i]) === -1){
+        for (var i = 0; i < data.length; i++) {
+            if (newData.indexOf(data[i]) === -1) {
                 newData.push(data[i]);
             }
         }
-
-        for (var i = 0; i < newData.length; i++){
-            console.log(newData[i]);
+        var output = ""
+        for (var i = 0; i < newData.length; i++) {
+            output += newData[i] + "\n";
         }
+        done(output);
     });
-    setTimeout(function() {
-        process.stdout.write("\nprompt > ");
-    }, 10);
 }
 
-module.exports = { pwd, ls, echo, cat, head, tail, sort, wc, uniq }
+function curl(file, done) {
+    request(file, function(error, response, body) {
+        done(body);
+    });
+}
+
+
+
+module.exports = { pwd, ls, echo, cat, head, tail, sort, wc, uniq, curl }
